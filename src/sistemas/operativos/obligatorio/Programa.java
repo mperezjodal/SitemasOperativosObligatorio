@@ -42,7 +42,7 @@ public class Programa {
     public String getNombreRecursoDeInstruccion(int indiceInstruccion){
         return this.listaInstrucciones[indiceInstruccion].getRecurso().getNombre();
     }
-    public int getCiclosProxInstruccion(int indiceInstruccion){
+    public int getCiclosInstruccion(int indiceInstruccion){
         return this.listaInstrucciones[indiceInstruccion].getCiclos();
     }
 }

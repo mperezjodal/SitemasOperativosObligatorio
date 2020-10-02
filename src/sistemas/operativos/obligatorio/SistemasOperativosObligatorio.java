@@ -45,15 +45,13 @@ public class SistemasOperativosObligatorio {
         return toReturn;
     };
     
-    static boolean todosTrue(boolean[] boolArray){
+    static boolean todosCompletados(Proceso[] colaProcesos){
         boolean toReturn = true;
-        
-        for(int i = 0; i < boolArray.length; i++){
-            if(!boolArray[i]){
+        for(int i = 0; i < colaProcesos.length; i++){
+            if(!colaProcesos[i].getEstado().equals("Completado") ){
                 toReturn = false;
             }
         }
-        
         return toReturn;
     }
     
@@ -62,7 +60,6 @@ public class SistemasOperativosObligatorio {
         progra_1.agregarInstruccion(ins_A);
         progra_1.agregarInstruccion(ins_A);
         
-        
         progra_2.agregarInstruccion(ins_B);
         
         
@@ -70,15 +67,12 @@ public class SistemasOperativosObligatorio {
         progra_3.agregarInstruccion(ins_C);
         progra_3.agregarInstruccion(ins_C);
         
-        Proceso pro1 = new Proceso(progra_1, "pro1");
-        Proceso pro2 = new Proceso(progra_2, "pro2");
-        Proceso pro3 = new Proceso(progra_3, "pro3");
-        Proceso pro4 = new Proceso(progra_1, "pro4");
+        Proceso pro1 = new Proceso(progra_1, "Proceso1");
+        Proceso pro2 = new Proceso(progra_2, "Proceso2");
+        Proceso pro3 = new Proceso(progra_3, "Proceso3");
+        Proceso pro4 = new Proceso(progra_1, "Proceso4");
         
         Proceso[] colaProcesos = {pro1, pro2, pro3, pro4};
-        boolean[] completados = {false, false, false, false};
-        
-        boolean[] yaSeMostro = {false, false, false, false};
         
         int procesosEnCola = colaProcesos.length;
         boolean seTermino = false;
@@ -86,45 +80,36 @@ public class SistemasOperativosObligatorio {
         int ciclosRestantesParaEsteProceso = ciclosDeTolerancia; 
         
         for(int i = 0; !seTermino; i = masMasCiclico(procesosEnCola, i) ){
-            
-            if(!completados[i]){
-                System.out.println("Se le entrego el procesador a:.............Programa: " + colaProcesos[i].getNombrePrograma() 
+            if(!colaProcesos[i].seCompletoElProceso()){
+                System.out.println("Se le entrego el procesador a:............. " + colaProcesos[i].getNombrePrograma() 
                         + "...Instancia: " + colaProcesos[i].getNombre());
             
-                int ciclosProxInst = colaProcesos[i].getCiclosProximaInstruccion();
-                while(ciclosRestantesParaEsteProceso >= ciclosProxInst && !completados[i]){
+                int ciclosInstruccion = colaProcesos[i].getCiclosInstruccion();
+                while(ciclosRestantesParaEsteProceso >= ciclosInstruccion && !colaProcesos[i].seCompletoElProceso()){
 
                     System.out.println("                INSTRUCCION EJECUTADA:  " + colaProcesos[i].getNombreProxInstruccion()
-                            + "  Programa: " + colaProcesos[i].getNombrePrograma() + "...Instancia: " + colaProcesos[i].getNombre());
+                            + "   " + colaProcesos[i].getNombrePrograma() + "...Instancia: " + colaProcesos[i].getNombre());
 
-                    
-                    ciclosRestantesParaEsteProceso -= colaProcesos[i].getCiclosProximaInstruccion();
-                    colaProcesos[i].avansar();
-                    completados[i] = colaProcesos[i].seCompletoElProceso();
+                    ciclosRestantesParaEsteProceso -= colaProcesos[i].getCiclosInstruccion();
+                    colaProcesos[i].avanzar();
                     
                     if(!colaProcesos[i].seCompletoElProceso()){
-                        ciclosProxInst = colaProcesos[i].getCiclosProximaInstruccion();
+                        ciclosInstruccion = colaProcesos[i].getCiclosInstruccion();
                     }
                 }
-                
-                
-                
-                if(completados[i]){
-                    System.out.println("EJECUCION COMPLETADA:......................Programa: " + colaProcesos[i].getNombrePrograma() 
+                if(colaProcesos[i].seCompletoElProceso()){
+                    System.out.println("PROCESO   COMPLETADO:...................... " + colaProcesos[i].getNombrePrograma() 
                         + " - Instancia: " + colaProcesos[i].getNombre());
+                    //Desencolar
                 }else{
-                    System.out.println("TIMEOUT - El proceso demoro demaciado:.....Programa: " 
+                    //Encolar
+                    System.out.println("TIMEOUT - El proceso demoro demasiado:..... " 
                             + colaProcesos[i].getNombrePrograma() 
                             + "...Instancia: " + colaProcesos[i].getNombre());
                 }
             }
-            
-            /*
-            if(colaProcesos[i].seCompletoElProceso()){
-                completados[i] = true;
-            }*/
             ciclosRestantesParaEsteProceso = ciclosDeTolerancia; 
-            seTermino = todosTrue(completados);
+            seTermino = todosCompletados(colaProcesos);
         }
     }
     
